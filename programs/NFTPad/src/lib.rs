@@ -9,7 +9,7 @@ mod basic_0 {
         Ok(())
     }
 
-    pub fn create_augment(_ctx: Context<Initialize>,owner:Pubkey, name: String, capacity: u16, character: &Vec<Pubkey>, account_bump: u8) -> ProgramResult {
+    pub fn create_augment(_ctx: Context<Initialize>,owner: Pubkey, name: String, capacity: u16, character: &Vec<Pubkey>, account_bump: u8) -> ProgramResult {
         let user = &ctx.accounts.user;
         let list = &mut ctx.accounts.list;
         let item = &mut ctx.accounts.item;
@@ -88,17 +88,17 @@ pub struct NewAugmentNFT<'info> {
 pub struct CharacterNFT {
     pub creator: Pubkey,
     pub owner: Pubkey,
-    pub attachedAugments: Vec<Pubkey>,
+    pub attached_augments: Vec<Pubkey>,
 }
 
 #[account]
 pub struct AugmentNFT {
     pub creator: Pubkey,
     pub owner: Pubkey,
-    pub publishedAddr: Pubkey,
+    pub published_addr: Pubkey,
     pub name: String,
     pub capacity: u16,
-    pub possibleCharacters: Vec<Pubkey>,
+    pub possible_characters: Vec<Pubkey>,
 }
 
 impl AugmentNFT {
