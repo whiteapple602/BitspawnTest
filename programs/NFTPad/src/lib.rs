@@ -5,26 +5,25 @@ declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
 #[program]
 mod basic_0 {
     use super::*;
-    pub fn initialize(_ctx: Context<Initialize>) -> ProgramResult {
-        Ok(())
-    }
 
-    pub fn create_augment(_ctx: Context<Initialize>,owner: Pubkey, name: String, capacity: u16, character: &Vec<Pubkey>, account_bump: u8) -> ProgramResult {
+    pub fn create_augment(_ctx: Context<NewAugmentNFT>, owner: Pubkey,addr: Pubkey, name: String, capacity: u16, character: &Vec<Pubkey>, account_bump: u8) -> ProgramResult {
         let user = &ctx.accounts.user;
         let list = &mut ctx.accounts.list;
-        let item = &mut ctx.accounts.item;
 
-        if list.lines.len() >= list.capacity as usize {
+        if list.lines.len() >= capacity as usize {
             return Err(NFTPadError::ListFull.into());
         }
 
-        list.lines.push(*item.to_account_info().key);
-        item.name = item_name;
-        item.creator = *user.to_account_info().key;
+        list.creator = user.to_account_info().key;
+        list.owner = owner;
+        list.published_addr = addr;
+        list.name = name;
+        list.capacity = capacity;
+        list.lines = *character.clone();
 
         // Move the bounty to the account. We account for the rent amount that Anchor's init
         // already transferred into the account.
-        let account_lamports = **item.to_account_info().lamports.borrow();
+        let account_lamports = **list.to_account_info().lamports.borrow();
         let transfer_amount = bounty
             .checked_sub(account_lamports)
             .ok_or(NFTPadError::BountyTooSmall)?;
@@ -33,12 +32,12 @@ mod basic_0 {
             invoke(
                 &transfer(
                     user.to_account_info().key,
-                    item.to_account_info().key,
+                    list.to_account_info().key,
                     transfer_amount,
                 ),
                 &[
                     user.to_account_info(),
-                    item.to_account_info(),
+                    list.to_account_info(),
                     ctx.accounts.system_program.to_account_info(),
                 ],
             )?;
