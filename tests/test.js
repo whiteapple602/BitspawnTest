@@ -57,7 +57,11 @@ describe('todo', () => {
     await program.rpc.newList(name, capacity, bump, {
       accounts: {
         list: listAccount,
-        user: owner.key.publicKey,
+        owner: owner.key.publicKey,
+        name: "new Augment",
+        capacity: 10,
+        character: [],
+        account_bump: bump,
         systemProgram: SystemProgram.programId,
       },
     });
