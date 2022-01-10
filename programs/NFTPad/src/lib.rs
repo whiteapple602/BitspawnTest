@@ -10,7 +10,7 @@ mod basic_0 {
         let user = &ctx.accounts.user;
         let list = &mut ctx.accounts.list;
 
-        if list.lines.len() >= capacity as usize {
+        if list.possible_characters.len() >= capacity as usize {
             return Err(NFTPadError::ListFull.into());
         }
 
@@ -19,7 +19,7 @@ mod basic_0 {
         list.published_addr = addr;
         list.name = name;
         list.capacity = capacity;
-        list.lines = *character.clone();
+        list.possible_characters = *character.clone();
 
         // Move the bounty to the account. We account for the rent amount that Anchor's init
         // already transferred into the account.
